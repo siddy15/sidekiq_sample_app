@@ -1,0 +1,47 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  batch:
+  attributes/example:
+    actions:
+      - key: example_field
+        action: insert
+        value: Hello from the OpenTelemetry Collector
+  filter/remove_sidekiq_traces:
+    traces:
+      span:
+        - 'attributes["messaging.system"] == "sidekiq"'
+        - 'attributes["messaging.sidekiq.job_class"] == "EmailWorker"' 
+        - 'span.name == "default process"'
+
+
+exporters:
+  debug:
+    verbosity: detailed
+  coralogix:
+    domain: "${CORALOGIX_DOMAIN}"
+    private_key: "${PRIVATE_KEY}"
+    application_name: "${APPLICATION_NAME}"
+    subsystem_name: "${SUBSYSTEM_NAME}"
+    timeout: 30s
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [filter/remove_sidekiq_traces, batch]
+      exporters: [coralogix, debug]
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [coralogix, debug]
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [debug, coralogix]

@@ -1,0 +1,13 @@
+source 'https://rubygems.org'
+
+gem 'sidekiq'
+gem 'opentelemetry-sdk'
+gem 'opentelemetry-exporter-otlp'
+gem 'opentelemetry-instrumentation-sidekiq'
+gem 'opentelemetry-instrumentation-rack'
+gem 'opentelemetry-instrumentation-rails'
+gem 'opentelemetry-instrumentation-active_support'
+gem 'opentelemetry-instrumentation-action_pack'
+gem 'opentelemetry-instrumentation-action_view'
+# gem 'opentelemetry-logger'
+gem 'sinatra'
