@@ -1,0 +1,16 @@
+services:
+  otelcol:
+    image: otel/opentelemetry-collector-contrib:latest
+    restart: unless-stopped
+    command: ["--config=/etc/otel-collector-config.yaml", "${OTELCOL_ARGS}"]
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    ports:
+      - 4317:4317
+      - 4318:4318
+      - 8888:8888
+    environment:
+      - CORALOGIX_DOMAIN
+      - PRIVATE_KEY
+      - APPLICATION_NAME
+      - SUBSYSTEM_NAME
